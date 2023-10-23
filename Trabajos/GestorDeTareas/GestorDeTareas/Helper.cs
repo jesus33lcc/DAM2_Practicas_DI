@@ -17,6 +17,7 @@ namespace GestorDeTareas
         private ListaTareas Modelo = new ListaTareas();
         private string Ruta_Lectura = "";
         private string Ruta_Escritura = "";
+        
 
         public void Menu()
         {
@@ -30,56 +31,36 @@ namespace GestorDeTareas
             WriteLineGreen("\t7. Cargar tareas desde archivo");
             WriteLineRed("\t8. Salir");
         }
-        public void ListarTodasLasTareas()
+        public void ListarListasFiltradas(int numeroMenu)
         {
-            if (Modelo.ListaDeTareas.Count != 0)
+            List<Tarea> ListaParaListar= new List<Tarea>();
+            switch (numeroMenu)
             {
-                Modelo.TodasLasTareas().ForEach(tarea =>
+                case 1:
+                    ListaParaListar = Modelo.ListaDeTareasFiltrada(1);
+                    break;
+                case 2:
+                    ListaParaListar = Modelo.ListaDeTareasFiltrada(2);
+                    break;
+                case 3:
+                    ListaParaListar = Modelo.ListaDeTareasFiltrada(3);
+                    break;
+                default:
+                    break;
+            }
+            if (ListaParaListar.Count != 0)
+            {
+                ListaParaListar.ForEach(tarea =>
                 {
                     WriteLineCyan(tarea.ToString());
                 });
             }
             else
             {
-                WriteLineRed("La lista de Tareas esta vacia, añada alguna Tarea o cargue un archivo");
-            }
-
-        }
-        public void ListarTareasIncompletas()
-        {
-            if (Modelo.ListaDeTareas.Count != 0)
-            {
-                if (Modelo.TareasIncompletas().Count != 0)
-                {
-                    Modelo.TareasIncompletas().ForEach(tarea =>
-                    {
-                        WriteLineCyan(tarea.ToString());
-                    });
-                }
-                else
-                {
-                    WriteLineDarkYellow("No hay ninguna tarea incompleta");
-                }
-            }
-            else
-            {
-                WriteLineRed("La lista de Tareas esta vacia, añada alguna Tarea o cargue un archivo");
+                WriteLineRed("No hay ninguna tarea");
             }
         }
-        public void ListarTareasPorFechaDeVencimiento()
-        {
-            if (Modelo.ListaDeTareas.Count != 0)
-            {
-                Modelo.TareasOrdenadoPorFech_Venc().ForEach(tarea =>
-                {
-                    WriteLineCyan(tarea.ToString());
-                });
-            }
-            else
-            {
-                WriteLineRed("La lista de Tareas esta vacia, añada alguna Tarea o cargue un archivo");
-            }
-        }
+        
         public void AgregarNuevaTarea()
         {
             WriteLineGreen("Escriba la descripción de la tarea:");
@@ -110,14 +91,14 @@ namespace GestorDeTareas
                     WriteLineRed("Formato incorrecto, introduzca la fecha con el formato correcto");
                 }
             } while (true);
-            Modelo.AgregarTarea(new Tarea(Descripcion, fechaConFormato, Modelo.TodasLasTareas().Count + 1));
+            Modelo.AgregarTarea(new Tarea(Descripcion, fechaConFormato, Modelo.ListaDeTareas.Count + 1));
             WriteLineGreen("La tarea ha sido añadida correctamente");
         }
         public void MarcarTareaComoCompletada()
         {
             if (Modelo.ListaDeTareas.Count != 0)
             {
-                ListarTareasIncompletas();
+                ListarListasFiltradas(2);
                 WriteLineCyan("Escribe el numero de la tarea que quieras marcar");
                 do
                 {
@@ -125,10 +106,10 @@ namespace GestorDeTareas
                     string Linea = Console.ReadLine().Trim();
                     if (int.TryParse(Linea, out Numero))
                     {
-                        var TareaParaMarcar = Modelo.TareasIncompletas().Find(tarea => tarea.Codigo == Numero);
+                        var TareaParaMarcar = Modelo.ListaDeTareasFiltrada(2).Find(tarea => tarea.Codigo == Numero);
                         if (TareaParaMarcar == null)
                         {
-                            WriteLineDarkYellow("Numero no valido, escriba un numero de la lista");
+                            WriteLineRed("Numero no valido, escriba un numero de la lista");
                         }
                         else
                         {
@@ -203,11 +184,11 @@ namespace GestorDeTareas
                 }
             }
         }
-        public void LeerEnJson()
+        public async Task LeerEnJson()
         {
             try
             {
-                string ListaTareaJson = File.ReadAllText(Ruta_Lectura);
+                string ListaTareaJson = await File.ReadAllTextAsync(Ruta_Lectura);
                 Modelo = JsonSerializer.Deserialize<ListaTareas>(ListaTareaJson);
                 WriteLineGreen($"Archivo {Ruta_Lectura} cargado correctamenta");
             }
@@ -233,12 +214,12 @@ namespace GestorDeTareas
             }
         }
 
-        public void EscribirEnJson()
+        public async Task EscribirEnJson()
         {
             try
             {
                 string ListaTareaJson = JsonSerializer.Serialize(Modelo);
-                File.WriteAllText(ArchivoGuardado+".json", ListaTareaJson);
+                await File.WriteAllTextAsync(RutaEscribir(".json"), ListaTareaJson);
             }
             catch (FileNotFoundException ex)
             {
@@ -261,7 +242,7 @@ namespace GestorDeTareas
                 Logger.EscribirEnLogFile("Error desconocido: " + ex.Message);
             }
         }
-        public void LeerEnXml()
+        public async Task LeerEnXml()
         {
             try
             {
@@ -298,7 +279,7 @@ namespace GestorDeTareas
             try
             {
                 XmlSerializer xmlSerializer = new XmlSerializer(typeof(ListaTareas));
-                using (TextWriter textWriter = new StreamWriter(Ruta_Escritura))
+                using (TextWriter textWriter = new StreamWriter(RutaEscribir(".xml")))
                 {
                     xmlSerializer.Serialize(textWriter, Modelo);
                 }
@@ -323,7 +304,6 @@ namespace GestorDeTareas
             {
                 Logger.EscribirEnLogFile("Error desconocido: " + ex.Message);
             }
-
         }
         public void SeleccionArchivo(string extension)
         {
@@ -349,9 +329,9 @@ namespace GestorDeTareas
                 Ruta_Lectura = rutaArchivo;
         }
         
-        public string ArchivoGuardado()
+        public string RutaEscribir(string extension)
         {
-            return DateTime.Now.ToString("yyyyMMdd") + "_Download";
+            return Path.Combine(Directory.GetCurrentDirectory(), DateTime.Now.ToString("yyyyMMdd") + "_Download"+extension);
         }
         static void WriteLineGreen(string texto)
         {
@@ -364,13 +344,6 @@ namespace GestorDeTareas
         {
             ConsoleColor originalColor = Console.ForegroundColor;
             Console.ForegroundColor = ConsoleColor.Red;
-            Console.WriteLine(texto);
-            Console.ForegroundColor = originalColor;
-        }
-        static void WriteLineDarkYellow(string texto)
-        {
-            ConsoleColor originalColor = Console.ForegroundColor;
-            Console.ForegroundColor = ConsoleColor.DarkYellow;
             Console.WriteLine(texto);
             Console.ForegroundColor = originalColor;
         }

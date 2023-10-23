@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -25,22 +26,24 @@ namespace GestorDeTareas
         {
             ListaDeTareas.Add(tarea);
         }
-        public void EliminarTarea()
+        public List<Tarea> ListaDeTareasFiltrada(int numeroMenu)
         {
-
-        }
-        public List<Tarea> TodasLasTareas()
-        {
-            return ListaDeTareas;
-        }
-        public List<Tarea> TareasIncompletas()
-        {
-            return ListaDeTareas.Where(tarea => tarea.Completado == false).ToList();
-        }
-        public List<Tarea> TareasOrdenadoPorFech_Venc()
-        {
-            return ListaDeTareas.OrderBy(tarea => tarea.FechaVencimiento).ToList();
-
+            List<Tarea> ListaFiltrada = new List<Tarea>();
+            switch (numeroMenu)
+            {
+                case 1:
+                    ListaFiltrada = ListaDeTareas.Where(tarea => tarea.Completado == false).ToList();
+                    break;
+                case 2:
+                    ListaFiltrada = ListaDeTareas.Where(tarea => tarea.Completado == false).ToList();
+                    break;
+                case 3:
+                    ListaFiltrada = ListaDeTareas.OrderBy(tarea => tarea.FechaVencimiento).ToList();
+                    break;
+                default:
+                    break;
+            }
+            return ListaFiltrada;
         }
     }
 }

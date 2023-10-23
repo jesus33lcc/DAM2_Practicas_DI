@@ -15,13 +15,13 @@ class Program
             switch (respuesta)
             {
                 case "1":
-                    Ayuda.ListarTodasLasTareas();
+                    Ayuda.ListarListasFiltradas(1);
                     break;
                 case "2":
-                    Ayuda.ListarTareasIncompletas();
+                    Ayuda.ListarListasFiltradas(2);
                     break;
                 case "3":
-                    Ayuda.ListarTareasPorFechaDeVencimiento();
+                    Ayuda.ListarListasFiltradas(3);
                     break;
                 case "4":
                     Ayuda.AgregarNuevaTarea();
