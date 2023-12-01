@@ -51,44 +51,6 @@ namespace GestorDeArchivos.Ventanas
             boton.MouseClick += Boton_MouseClick;
             flowLayoutPanel.Controls.Add(boton);
         }
-
-        private void Boton_DoubleClick(object? sender, EventArgs e)
-        {
-            BotonX botonClick = (BotonX)sender;
-            if (File.Exists(botonClick.Name))
-            {
-                Form1 form1 = (Form1)this.Owner;
-                form1.addFile(botonClick.Name);
-                //usaria this.Close() pero no se porque no funciona
-                this.Dispose();
-            }
-            else
-            {
-                LimpiarPanel();
-                RellenarPanel(botonClick.Name);
-                this.Text = botonClick.Name;
-                DirectorioActual = botonClick.Name;
-            }        
-        }
-        private void Boton_MouseClick(object sender, MouseEventArgs e)
-        {
-            if (e.Button == MouseButtons.Right)
-            {
-                BotonClickDel = (BotonX)sender;
-                ContextMenuStrip menu = MenuBotonDelete();
-                menu.Show((Control)sender, e.Location);
-            }
-        }
-    
-
-        private void flowLayoutPanel_MouseClick(object sender, MouseEventArgs e)
-        {
-            if (e.Button == MouseButtons.Right)
-            {
-                ContextMenuStrip menu = MenuClickDerecho();
-                menu.Show(this, e.Location);
-            }
-        }
         private ContextMenuStrip MenuClickDerecho()
         {
             ContextMenuStrip menu = new ContextMenuStrip();
@@ -133,26 +95,6 @@ namespace GestorDeArchivos.Ventanas
                 Directory.Delete(file);
             }
         }
-        private void Crear_Click(object sender, EventArgs e)
-        {
-            ToolStripMenuItem item = (ToolStripMenuItem)sender;
-            VentanaCreate VentanaCrearX = null;
-            if (item.Text.Equals(Constantes.CREAR_ARCHIVO))
-            {
-                VentanaCrearX = new VentanaCreate(Constantes.CREAR_ARCHIVO, DirectorioActual);
-            }
-            else if (item.Text.Equals(Constantes.CREAR_CARPETA))
-            {
-                VentanaCrearX = new VentanaCreate(Constantes.CREAR_CARPETA, DirectorioActual);
-            }
-            else
-            {
-                VentanaCrearX = new VentanaCreate();
-            }
-            VentanaCrearX.Owner = this;
-            VentanaCrearX.StartPosition = FormStartPosition.CenterParent;
-            VentanaCrearX.ShowDialog();
-        }
         public void RellenarPanel(string directorio)
         {
             foreach (string archivo in Directory.GetFileSystemEntries(directorio))
@@ -186,6 +128,61 @@ namespace GestorDeArchivos.Ventanas
                 LimpiarPanel();
                 RellenarPanel(DirectorioActual);
             }
+        }
+        private void Boton_DoubleClick(object? sender, EventArgs e)
+        {
+            BotonX botonClick = (BotonX)sender;
+            if (File.Exists(botonClick.Name))
+            {
+                Form1 form1 = (Form1)this.Owner;
+                form1.addFile(botonClick.Name);
+                //usaria this.Close() pero no se porque no funciona
+                this.Dispose();
+            }
+            else
+            {
+                LimpiarPanel();
+                RellenarPanel(botonClick.Name);
+                this.Text = botonClick.Name;
+                DirectorioActual = botonClick.Name;
+            }
+        }
+        private void Boton_MouseClick(object sender, MouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Right)
+            {
+                BotonClickDel = (BotonX)sender;
+                ContextMenuStrip menu = MenuBotonDelete();
+                menu.Show((Control)sender, e.Location);
+            }
+        }
+        private void flowLayoutPanel_MouseClick(object sender, MouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Right)
+            {
+                ContextMenuStrip menu = MenuClickDerecho();
+                menu.Show(this, e.Location);
+            }
+        }
+        private void Crear_Click(object sender, EventArgs e)
+        {
+            ToolStripMenuItem item = (ToolStripMenuItem)sender;
+            VentanaCreate VentanaCrearX = null;
+            if (item.Text.Equals(Constantes.CREAR_ARCHIVO))
+            {
+                VentanaCrearX = new VentanaCreate(Constantes.CREAR_ARCHIVO, DirectorioActual);
+            }
+            else if (item.Text.Equals(Constantes.CREAR_CARPETA))
+            {
+                VentanaCrearX = new VentanaCreate(Constantes.CREAR_CARPETA, DirectorioActual);
+            }
+            else
+            {
+                VentanaCrearX = new VentanaCreate();
+            }
+            VentanaCrearX.Owner = this;
+            VentanaCrearX.StartPosition = FormStartPosition.CenterParent;
+            VentanaCrearX.ShowDialog();
         }
     }
 }

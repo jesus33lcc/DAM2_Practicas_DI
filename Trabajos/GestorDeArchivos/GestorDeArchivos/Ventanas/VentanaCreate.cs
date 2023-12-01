@@ -57,6 +57,8 @@ namespace GestorDeArchivos.Ventanas
             {
                 VentanaArchivos ventanaArchivos = (VentanaArchivos)this.Owner;
                 ventanaArchivos.AddBoton(file);
+                ventanaArchivos.LimpiarPanel();
+                ventanaArchivos.RellenarPanel(ventanaArchivos.DirectorioActual);
             }else if (this.Owner is Form1)
             {
                 Form1 form1 = (Form1)this.Owner;
