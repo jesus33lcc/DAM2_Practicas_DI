@@ -13,13 +13,15 @@ namespace GestorDeArchivos.Ventanas
 {
     public partial class VentanaCreate : Form
     {
+        string Ruta { get; set; }
         public VentanaCreate()
         {
             InitializeComponent();
         }
-        public VentanaCreate(string titulo)
+        public VentanaCreate(string titulo, string file)
         {
             InitializeComponent();
+            Ruta = file;
             this.Text = titulo;
         }
 
@@ -39,20 +41,28 @@ namespace GestorDeArchivos.Ventanas
 
         private void btnCrear_Click(object sender, EventArgs e)
         {
-            string ruta = "";
+            string file = "";
             if (this.Text.Equals(Constantes.CREAR_ARCHIVO))
             {
-                ruta = Path.Combine(Constantes.FILES, txtBoxNombre.Text + ".txt");
-                File.Create(ruta);
+                file = Path.Combine(Ruta, txtBoxNombre.Text + ".txt");
+                using (File.Create(file));
             }
             else if (this.Text.Equals(Constantes.CREAR_CARPETA))
             {
-                ruta = Path.Combine(Constantes.FILES, txtBoxNombre.Text);
-                Directory.CreateDirectory(ruta);
+                file = Path.Combine(Ruta, txtBoxNombre.Text);
+                Directory.CreateDirectory(file);
             }
 
-            VentanaArchivos ventanaArchivos = (VentanaArchivos)this.Owner;
-            ventanaArchivos.AddBoton(ruta);
+            if (this.Owner is VentanaArchivos)
+            {
+                VentanaArchivos ventanaArchivos = (VentanaArchivos)this.Owner;
+                ventanaArchivos.AddBoton(file);
+            }else if (this.Owner is Form1)
+            {
+                Form1 form1 = (Form1)this.Owner;
+                form1.Text = txtBoxNombre.Text;
+                form1.FicheroActual = file;
+            }
             this.Close();
         }
     }

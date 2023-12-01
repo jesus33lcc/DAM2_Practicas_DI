@@ -48,7 +48,7 @@
             ClientSize = new Size(427, 309);
             Controls.Add(flowLayoutPanel);
             Name = "VentanaArchivos";
-            Text = "Form1";
+            Text = "form";
             ResumeLayout(false);
         }
 
