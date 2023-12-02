@@ -13,6 +13,8 @@ namespace GestorDeArchivos.Utils
         public const string TXT = "Utils\\txt.png";
         public const string CREAR_ARCHIVO = "Crear Archivo";
         public const string CREAR_CARPETA = "Crear Carpeta";
+        public const string NUEVO_ARCHIVO = "NUEVO ARCHIVO";
         public const string FILES = "FILES\\";
+        public const string NOMBRE_CARPETA_FILES = "FILES";
     }
 }
