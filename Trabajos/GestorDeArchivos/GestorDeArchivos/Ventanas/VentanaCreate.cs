@@ -56,7 +56,7 @@ namespace GestorDeArchivos.Ventanas
             if (this.Owner is VentanaArchivos)
             {
                 VentanaArchivos ventanaArchivos = (VentanaArchivos)this.Owner;
-                ventanaArchivos.AddBoton(file);
+                ventanaArchivos.flowLayoutPanel.Controls.Add(ventanaArchivos.CrearBoton(file));
                 ventanaArchivos.LimpiarPanel();
                 ventanaArchivos.RellenarPanel(ventanaArchivos.DirectorioActual);
             }else if (this.Owner is Form1)

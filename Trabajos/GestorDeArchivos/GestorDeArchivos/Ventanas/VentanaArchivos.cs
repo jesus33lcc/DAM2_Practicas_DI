@@ -27,7 +27,7 @@ namespace GestorDeArchivos.Ventanas
             flowLayoutPanel.Controls.Add(CrearBotonAtras());
             RellenarPanel(DirectorioActual);
         }
-        public void AddBoton(string archivo)
+        public BotonX CrearBoton(string archivo)
         {
             BotonX boton = new BotonX();
             boton.Size = new Size(100, 125);
@@ -49,7 +49,7 @@ namespace GestorDeArchivos.Ventanas
             boton.Name = archivo;
             boton.DoubleClick += Boton_DoubleClick;
             boton.MouseClick += Boton_MouseClick;
-            flowLayoutPanel.Controls.Add(boton);
+            return boton;
         }
         private ContextMenuStrip MenuClickDerecho()
         {
@@ -99,7 +99,7 @@ namespace GestorDeArchivos.Ventanas
         {
             foreach (string archivo in Directory.GetFileSystemEntries(directorio))
             {
-                AddBoton(archivo);
+                this.flowLayoutPanel.Controls.Add(CrearBoton(archivo));
             }
         }
         public void LimpiarPanel()
@@ -136,7 +136,6 @@ namespace GestorDeArchivos.Ventanas
             {
                 Form1 form1 = (Form1)this.Owner;
                 form1.addFile(botonClick.Name);
-                //usaria this.Close() pero no se porque no funciona
                 this.Dispose();
             }
             else

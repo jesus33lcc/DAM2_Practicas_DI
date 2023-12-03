@@ -57,7 +57,7 @@ namespace GestorDeArchivos
             this.Text = Constantes.NUEVO_ARCHIVO;
             FicheroActual = Path.Combine(Constantes.FILES, this.Text + ".txt");
         }
-        public void addFile(String archivo)
+        public void addFile(string archivo)
         {
             rtbTextArea.Clear();
             this.Text = Path.GetFileName(archivo);
